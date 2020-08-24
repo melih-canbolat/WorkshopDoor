@@ -24,6 +24,7 @@ const int closed_lock_angle = 140;  // Servo angle for locking
 
 String input;                   // Variable to store user input
 int failed_attempt = 0;         // Count of failed attempts
+const int servoDelay = 1000;
 const int buzzer = 12;          // Buzzer pin
 const int super_buttonPin = 2;  // Button that opens/closes the door w/out password (interrupt)
 const int servo_pin = 11;       // Servo motor signal pin
@@ -55,6 +56,8 @@ void setup()
   servo.attach(servo_pin);
   servo.write(closed_lock_angle);  // Lock the door initially
   lock_state = true;
+  delay(servoDelay);
+  servo.detach();  // Detach the servo to save power
 
   pinMode(buzzer, OUTPUT);
   pinMode(super_buttonPin, INPUT_PULLUP);
@@ -90,8 +93,11 @@ void loop()
           failed_attempt = 0;
           beep(3000,150);
           beep(5000,150);
+          servo.attach(servo_pin);
           servo.write(open_lock_angle);  // Open the door
           lock_state = false;
+          delay(servoDelay);
+          servo.detach();  // Detach the servo to save power
         }
         else
         {
@@ -116,8 +122,11 @@ void loop()
   {
     Serial.println("The door is locked");
     beep(800,500);
+    servo.attach(servo_pin);
     servo.write(closed_lock_angle);  // Lock the door
     lock_state = true;
+    delay(servoDelay);
+    servo.detach();  // Detach the servo to save power
   }
 }
 
@@ -139,11 +148,13 @@ void isr() // Interrupt service routine
     {
       case 0:
         Serial.println("The door is opened");
+        servo.attach(servo_pin);
         servo.write(open_lock_angle);  // Open the door
         break;
 
       case 1:
         Serial.println("The door is locked");
+        servo.attach(servo_pin);
         servo.write(closed_lock_angle);  // Lock the door
         break;
     }
