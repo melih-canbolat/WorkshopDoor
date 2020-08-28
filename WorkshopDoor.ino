@@ -24,7 +24,7 @@ const int closed_lock_angle = 140;  // Servo angle for locking
 
 String input;                   // Variable to store user input
 int failed_attempt = 0;         // Count of failed attempts
-const int servoDelay = 1000;
+const int servoDelay = 500;     // Time delay after which the servo will be detached
 const int buzzer = 12;          // Buzzer pin
 const int super_buttonPin = 2;  // Button that opens/closes the door w/out password (interrupt)
 const int servo_pin = 11;       // Servo motor signal pin
